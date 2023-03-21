@@ -1,0 +1,59 @@
+/*Grammaire CUP du projet Expression*/
+package generated.fr.ul.miage.expression2;
+import fr.ul.miage.arbre.*;
+
+
+/* code java */
+parser code {:
+    public Noeud resultat = null;
+    :}
+
+/*----------------------------------------------*/
+/* la grammaire */
+/* 1) terminaux (avec PO/PF -> parenthese ouvrante/fermante, et AO/AF -> accolade ouvrante/fermante) */
+terminal ADD, MUL, PO, PF, AO, AF, AFF;
+terminal NUM, PROG, IDF;
+terminal GLOB, PARAM, ENTIER, VIDE, ECRIRE, LIRE, RETOURNE, TANTQUE, SI, SINON, SUP, INF;
+/* 2) non terminaux */
+non terminal langage;
+non terminal expression, cde, var, fonct, scope, type, cdeF, tq, si, tst;
+non terminal Noeud exp, facteur, atome;
+/* 3) Axiome/Start */
+start with langage;
+
+
+/*----------------------------------------------*/
+/*4) regles de production */
+langage ::= PROG AO cde AF
+    ;
+
+cde ::= scope type var AFF NUM cde |
+        scope type var cde |
+        fonct PO IDF AFF NUM PF : type AO cdeF AF
+    ;
+
+cdeF ::= var AFF expression |
+     tq |
+      si |
+       ECRIRE |
+    RETOURNE
+    ;
+
+tq ::= TANTQUE PO var tst expression PF AO cdeF AF
+    ;
+
+si ::= SI PO var tst expression PF AO cdeF AF
+    | SI PO var tst expression PF AO cdeF AF SINON AO cdeF AF
+    ;
+
+tst ::= SUP
+    | INF
+    ;
+
+scope ::= GLOB |
+    PARAM
+    ;
+
+type ::= ENTIER
+    | VIDE
+    ;
